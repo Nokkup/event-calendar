@@ -1,6 +1,6 @@
 ## About
 
-Calendar application for creating events, with logging and saving records to the online database.
+Calendar application for creating events, with authentication and saving records to the online database.
 Created with React, Redux, Ant Design and Firebase.
 
 ## Live demo
