@@ -13,11 +13,11 @@ const AppRouter = () => {
             ?
             <Switch>
                 <Route
-                    path={"/"}
+                    path={"/calendar"}
                     exact={true}
                     component={Event}
                 />
-                <Redirect to={"/"} />
+                <Redirect to={"/calendar"} />
             </Switch>
             :
             <Switch>

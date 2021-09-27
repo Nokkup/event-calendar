@@ -1,10 +1,9 @@
-import { SET_AUTH, SET_ERROR, SET_IS_LOADING, SET_USER } from "../action-types";
+import { SET_AUTH, SET_IS_LOADING, SET_USER } from "../action-types";
 
 const initialState = {
     isAuth: false,
     isLoading: false,
     user: {},
-    error: "",
 }
 
 export default function authReducer(state = initialState, action) {
@@ -15,8 +14,6 @@ export default function authReducer(state = initialState, action) {
             return { ...state, user: action.payload };
         case SET_IS_LOADING:
             return { ...state, isLoading: action.payload };
-        case SET_ERROR:
-            return { ...state, error: action.payload, isLoading: false };
         default:
             return state;
     }

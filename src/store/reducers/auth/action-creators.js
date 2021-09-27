@@ -1,6 +1,7 @@
-import { SET_AUTH, SET_ERROR, SET_IS_LOADING, SET_USER } from "../action-types";
-import { signInWithEmailAndPassword } from "firebase/auth";
+import { SET_AUTH, SET_IS_LOADING, SET_USER } from "../action-types";
+import { signInWithEmailAndPassword, createUserWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../../../firebase";
+import { message } from "antd";
 
 export const AuthActionCreators = {
     setUser: (user) => {
@@ -12,9 +13,6 @@ export const AuthActionCreators = {
     setIsLoading: (isLoading) => {
         return { type: SET_IS_LOADING, payload: isLoading }
     },
-    setError: (error) => {
-        return { type: SET_ERROR, payload: error }
-    },
 
     login: (email, password) => async (dispatch) => {
         dispatch(AuthActionCreators.setIsLoading(true));
@@ -23,16 +21,26 @@ export const AuthActionCreators = {
                 const user = userCredential.user;
                 dispatch(AuthActionCreators.setUser({ email: user.email, uid: user.uid }));
                 dispatch(AuthActionCreators.setIsAuth(true));
-                dispatch(AuthActionCreators.setError(""));
                 dispatch(AuthActionCreators.setIsLoading(false));
             })
             .catch((error) => {
-                dispatch(AuthActionCreators.setError("Неправильный логин или пароль"));
+                message.error("Неправильный логин или пароль");
             });
     },
+
     logout: () => async (dispatch) => {
         auth.signOut();
         dispatch(AuthActionCreators.setUser({}));
         dispatch(AuthActionCreators.setIsAuth(false));
     },
+
+    registration: (email, password) => async (dispatch) => {
+        createUserWithEmailAndPassword(auth, email, password)
+            .then((userCredential) => {
+                dispatch(AuthActionCreators.login(email, password));
+            })
+            .catch((error) => {
+                message.error(error.message);
+            });
+    }
 }

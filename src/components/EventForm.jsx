@@ -9,10 +9,6 @@ const EventForm = ({ submit }) => {
         description: ""
     });
 
-    const selectDate = date => {
-        date && setEvent({ ...event, date: date.format('YYYY-MM-DD') });
-    }
-
     return (
         <Form onFinish={() => submit(event)} labelCol={{ span: 6 }}>
             <Form.Item
@@ -50,7 +46,7 @@ const EventForm = ({ submit }) => {
                     }),
                 ]}
             >
-                <DatePicker onChange={date => selectDate(date)} />
+                <DatePicker onChange={date => setEvent({ ...event, date: date.format('YYYY-MM-DD') })} />
             </Form.Item>
 
             <Row justify="end">

@@ -18,7 +18,7 @@ const App = () => {
 				dispatch(AuthActionCreators.setIsAuth(true));
 			}
 		})
-	})
+	}, [])
 
 	return (
 		<Layout>

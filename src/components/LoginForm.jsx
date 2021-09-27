@@ -1,13 +1,13 @@
 import React, { createRef, useState } from 'react';
 import { useSelector, useDispatch } from "react-redux";
-import { Form, Input, Button, message, Tooltip } from "antd";
+import { Form, Input, Button, Tooltip } from "antd";
 import { AuthActionCreators } from "../store/reducers/auth/action-creators";
 import { Link } from 'react-router-dom';
 
 
 const LoginForm = () => {
 
-    const { error, isLoading } = useSelector(state => state.auth);
+    const { isLoading } = useSelector(state => state.auth);
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const formRef = createRef();
@@ -18,8 +18,7 @@ const LoginForm = () => {
     }
 
     const fillForm = () => {
-        let email = "test@test.test";
-        let password = "testpass"
+        const [email, password] = ["test@test.test", "testpass"];
         formRef.current.setFieldsValue({
             email,
             password,
@@ -28,20 +27,8 @@ const LoginForm = () => {
         setPassword(password);
     }
 
-    const errorMessage = () => {
-        message.error(error);
-        dispatch(AuthActionCreators.setError(""));
-    };
-
     return (
-        <Form
-            name="login"
-            ref={formRef}
-            onFinish={submitForm}
-        >
-            {
-                error && errorMessage()
-            }
+        <Form name="login" ref={formRef} onFinish={submitForm} >
 
             <Form.Item name="email" rules={[{ required: true, message: "Введите email" }]} >
                 <Input value={email} onChange={e => setEmail(e.target.value)} placeholder="Email" />

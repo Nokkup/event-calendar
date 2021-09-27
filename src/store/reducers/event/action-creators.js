@@ -11,22 +11,25 @@ export const EventActionCreators = {
     addEvent: (event) => {
         return { type: ADD_EVENT, payload: event }
     },
+
     uploadEvents: (user, events, newEvent) => async dispatch => {
         try {
-            let emailHash = MD5(user.email).toString();
+            const emailHash = MD5(user.email).toString();
 
             set(ref(database, emailHash), {
                 events: [...events, newEvent]
             });
             dispatch(EventActionCreators.addEvent(newEvent));
+
         } catch (error) {
             console.error(error);
         }
     },
+
     getEvents: (user) => async dispatch => {
         try {
             let events = [];
-            let emailHash = MD5(user.email).toString();
+            const emailHash = MD5(user.email).toString();
 
             await get(child(dbRef, emailHash)).then((snapshot) => {
                 if (snapshot.exists()) {

@@ -1,10 +1,8 @@
 import React, { useState } from 'react';
 import { useDispatch } from "react-redux";
-import { Form, Input, Button, message } from "antd";
+import { Form, Input, Button } from "antd";
 import { AuthActionCreators } from "../store/reducers/auth/action-creators";
 import { Link } from 'react-router-dom';
-import { createUserWithEmailAndPassword } from '@firebase/auth';
-import { auth } from '../firebase';
 
 
 const RegistrationForm = () => {
@@ -14,20 +12,12 @@ const RegistrationForm = () => {
     const dispatch = useDispatch();
 
     const submitForm = () => {
-        createUserWithEmailAndPassword(auth, email, password)
-            .then((userCredential) => {
-                dispatch(AuthActionCreators.login(email, password));
-            })
-            .catch((error) => {
-                message.error(error.message);
-            });
+        dispatch(AuthActionCreators.registration(email, password))
     }
 
     return (
-        <Form
-            name="registration"
-            onFinish={submitForm}
-        >
+        <Form name="registration" onFinish={submitForm} >
+
             <Form.Item name="email" rules={[{ required: true, message: "Введите email" }]} >
                 <Input value={email} onChange={e => setEmail(e.target.value)} placeholder="Email" />
             </Form.Item>

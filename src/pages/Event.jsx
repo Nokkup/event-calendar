@@ -1,10 +1,10 @@
+import React, { useEffect, useState } from 'react'
 import { Layout, Row, Button, Modal, message, Affix, Tooltip, ConfigProvider } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
-import React, { useEffect, useState } from 'react'
-import EventCalendar from '../components/EventsCalendar';
-import EventForm from '../components/EventForm';
 import { EventActionCreators } from "../store/reducers/event/action-creators";
 import { useDispatch, useSelector } from "react-redux";
+import EventCalendar from '../components/EventsCalendar';
+import EventForm from '../components/EventForm';
 import 'moment/locale/ru';
 import locale from 'antd/lib/locale/ru_RU';
 
@@ -19,7 +19,7 @@ const Event = () => {
         dispatch(EventActionCreators.getEvents(user));
     }, [])
 
-    const submitForm = (newEvent) => {
+    const submitForm = newEvent => {
         setModalVisible(false);
         dispatch(EventActionCreators.uploadEvents(user, events, newEvent));
         message.success("Событие добавлено");
@@ -31,8 +31,6 @@ const Event = () => {
                 <ConfigProvider locale={locale}>
                     <Row justify="center" >
                         <EventCalendar events={events} />
-                    </Row>
-                    <Row justify="center">
                     </Row>
                     <Modal
                         title="Добавить новое событие"
@@ -50,7 +48,7 @@ const Event = () => {
                         type="primary"
                         size="large"
                         shape="circle"
-                        onClick={() => setModalVisible(!modalVisible)}
+                        onClick={() => setModalVisible(true)}
                         icon={<PlusOutlined />}
                     >
                     </Button>

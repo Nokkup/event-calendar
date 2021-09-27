@@ -34,19 +34,21 @@ const EventCalendar = ({ events }) => {
     function dateCellRender(value) {
         const formatedDate = value.format('YYYY-MM-DD');
         const currentDayEvents = events.filter(el => el.date === formatedDate);
-        let isPastEvents = value.isSameOrBefore(moment());
+        const isPastEvents = value.isSameOrBefore(moment());
         return (
             <EventsList>
                 {currentDayEvents.map((el, i) =>
-                    <li className={isPastEvents ? "past-date" : "future-date"} key={i}>{el.description}</li>
+                    <li className={isPastEvents ? "past-date" : "future-date"} key={i}>
+                        {el.description}
+                    </li>
                 )}
             </EventsList>
         );
     }
 
     const selectDate = value => {
-        let formatedDate = value.format('YYYY-MM-DD');
-        let currentEvents = events.filter(el => el.date === formatedDate);
+        const formatedDate = value.format('YYYY-MM-DD');
+        const currentEvents = events.filter(el => el.date === formatedDate);
         if (currentEvents.length > 0) {
             setModalVisible(true);
             setSelectedEvents(currentEvents);
@@ -55,7 +57,6 @@ const EventCalendar = ({ events }) => {
 
     return (
         <>
-
             <Calendar
                 fullscreen={true}
                 style={{ width: "800px" }}
