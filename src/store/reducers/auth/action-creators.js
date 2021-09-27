@@ -25,6 +25,7 @@ export const AuthActionCreators = {
             })
             .catch((error) => {
                 message.error("Неправильный логин или пароль");
+                dispatch(AuthActionCreators.setIsLoading(false));
             });
     },
 
