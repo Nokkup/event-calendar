@@ -1,0 +1,49 @@
+import React, { useState } from 'react';
+import { useDispatch } from "react-redux";
+import { Form, Input, Button, message } from "antd";
+import { AuthActionCreators } from "../store/reducers/auth/action-creators";
+import { Link } from 'react-router-dom';
+import { createUserWithEmailAndPassword } from '@firebase/auth';
+import { auth } from '../firebase';
+
+
+const RegistrationForm = () => {
+
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const dispatch = useDispatch();
+
+    const submitForm = () => {
+        createUserWithEmailAndPassword(auth, email, password)
+            .then((userCredential) => {
+                dispatch(AuthActionCreators.login(email, password));
+            })
+            .catch((error) => {
+                message.error(error.message);
+            });
+    }
+
+    return (
+        <Form
+            name="registration"
+            onFinish={submitForm}
+        >
+            <Form.Item name="email" rules={[{ required: true, message: "Введите email" }]} >
+                <Input value={email} onChange={e => setEmail(e.target.value)} placeholder="Email" />
+            </Form.Item>
+
+            <Form.Item name="password" rules={[{ required: true, message: "Введите пароль" }]} >
+                <Input.Password value={password} placeholder="Password" onChange={e => setPassword(e.target.value)} />
+            </Form.Item>
+
+            <Form.Item>
+                <Button type="primary" htmlType="submit" style={{ width: "100%" }}>Registration</Button>
+                <span>Or </span>
+                <Link to="/login">login</Link>
+            </Form.Item>
+
+        </Form>
+    )
+}
+
+export default RegistrationForm;
