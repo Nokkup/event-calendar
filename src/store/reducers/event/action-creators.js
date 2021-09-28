@@ -12,14 +12,19 @@ export const EventActionCreators = {
         return { type: ADD_EVENT, payload: event }
     },
 
-    uploadEvents: (user, events, newEvent) => async dispatch => {
+    uploadEvents: (user, events, newEvent = null) => async dispatch => {
         try {
             const emailHash = MD5(user.email).toString();
+            const newEvents = events.slice();
+
+            if (newEvent) {
+                newEvents.push(newEvent);
+                dispatch(EventActionCreators.addEvent(newEvent));
+            }
 
             set(ref(database, emailHash), {
-                events: [...events, newEvent]
+                events: newEvents
             });
-            dispatch(EventActionCreators.addEvent(newEvent));
 
         } catch (error) {
             console.error(error);

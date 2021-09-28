@@ -1,16 +1,28 @@
 import React, { useState } from 'react';
 import { DatePicker, Form, Input, Button, Row } from "antd";
 import moment from 'moment';
+import { eventStatus } from '../enums';
 
 const EventForm = ({ submit }) => {
-
+    const [form] = Form.useForm();
     const [event, setEvent] = useState({
         date: "",
-        description: ""
+        description: "",
+        status: eventStatus.PLANNED
     });
 
+    const onFinish = () => {
+        submit(event);
+        setEvent({
+            date: "",
+            description: "",
+            status: eventStatus.PLANNED
+        })
+        form.resetFields();
+    }
+
     return (
-        <Form onFinish={() => submit(event)} labelCol={{ span: 6 }}>
+        <Form form={form} onFinish={onFinish} labelCol={{ span: 6 }}>
             <Form.Item
                 label="Описание:"
                 name="decription"
@@ -46,7 +58,7 @@ const EventForm = ({ submit }) => {
                     }),
                 ]}
             >
-                <DatePicker onChange={date => setEvent({ ...event, date: date.format('YYYY-MM-DD') })} />
+                <DatePicker onChange={date => setEvent({ ...event, date: date?.format('YYYY-MM-DD') })} />
             </Form.Item>
 
             <Row justify="end">

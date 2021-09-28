@@ -8,6 +8,7 @@ import { Link } from 'react-router-dom';
 const LoginForm = () => {
 
     const { isLoading } = useSelector(state => state.auth);
+    const [form] = Form.useForm();
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const formRef = createRef();
@@ -19,16 +20,13 @@ const LoginForm = () => {
 
     const fillForm = () => {
         const [email, password] = ["test@test.test", "testpass"];
-        formRef.current.setFieldsValue({
-            email,
-            password,
-        });
+        form.setFieldsValue({ email, password });
         setEmail(email);
         setPassword(password);
     }
 
     return (
-        <Form name="login" ref={formRef} onFinish={submitForm} >
+        <Form name="login" ref={formRef} form={form} onFinish={submitForm} >
 
             <Form.Item name="email" rules={[{ required: true, message: "Введите email" }]} >
                 <Input value={email} onChange={e => setEmail(e.target.value)} placeholder="Email" />
