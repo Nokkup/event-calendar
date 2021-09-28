@@ -41,19 +41,20 @@ const Event = () => {
                         <EventForm submit={submitForm} />
                     </Modal>
                 </ConfigProvider>
+                <Affix style={{ position: 'fixed', bottom: 20, right: 20, zIndex: 10 }} >
+                    <Tooltip placement="left" title="Добавить новое событие">
+                        <Button
+                            type="primary"
+                            size="large"
+                            shape="circle"
+                            onClick={() => setModalVisible(true)}
+                            icon={<PlusOutlined />}
+                        >
+                        </Button>
+                    </Tooltip>
+                </Affix>
             </Layout>
-            <Affix style={{ position: 'fixed', bottom: 20, right: 20 }} >
-                <Tooltip placement="left" title="Добавить новое событие">
-                    <Button
-                        type="primary"
-                        size="large"
-                        shape="circle"
-                        onClick={() => setModalVisible(true)}
-                        icon={<PlusOutlined />}
-                    >
-                    </Button>
-                </Tooltip>
-            </Affix>
+
         </>
     )
 }

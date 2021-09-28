@@ -96,7 +96,7 @@ const EventCalendar = ({ events }) => {
         <>
             <Calendar
                 fullscreen={true}
-                style={{ width: "800px" }}
+                style={{ width: "800px", zIndex: 1 }}
                 dateCellRender={dateCellRender}
                 onSelect={selectDate}
             />
