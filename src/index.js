@@ -8,7 +8,7 @@ import 'antd/dist/antd.css';
 
 ReactDOM.render(
     <Provider store={store}>
-        <BrowserRouter>
+        <BrowserRouter basename="/event-calendar">
             <App />
         </BrowserRouter>
     </Provider>,

@@ -111,10 +111,15 @@ const EventCalendar = ({ events }) => {
                     dataSource={selectedEvents}
                     renderItem={item => (
                         <List.Item>
-                            <List.Item.Meta key={item.id} />
+                            <List.Item.Meta key={item.id + item.date} />
                             {item.description}
                             <Row justify="end">
-                                <Radio.Group size="small" defaultValue={item.status} onChange={e => changeStatus(e, item)}>
+                                <Radio.Group
+                                    size="small"
+                                    buttonStyle="solid"
+                                    value={item.status}
+                                    onChange={e => changeStatus(e, item)}
+                                >
                                     <Radio.Button value={eventStatus.PLANNED}>Planned</Radio.Button>
                                     <Radio.Button value={eventStatus.DONE}>Done</Radio.Button>
                                     <Radio.Button value={eventStatus.CANCELLED}>Cancelled</Radio.Button>
