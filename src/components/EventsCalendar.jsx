@@ -87,6 +87,7 @@ const EventCalendar = ({ events }) => {
 
     const changeStatus = (e, item) => {
         const newEvents = events.slice();
+        item.status = e.target.value;
         newEvents[item.id].status = e.target.value;
         dispatch(EventActionCreators.setEvents(newEvents));
         dispatch(EventActionCreators.uploadEvents(user, newEvents));
