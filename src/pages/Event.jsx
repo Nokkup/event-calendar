@@ -13,49 +13,47 @@ const Event = () => {
     const dispatch = useDispatch();
     const [modalVisible, setModalVisible] = useState(false);
     const { events } = useSelector(state => state.event);
-    const { user } = useSelector(state => state.auth);
 
     useEffect(() => {
-        dispatch(EventActionCreators.getEvents(user));
+        dispatch(EventActionCreators.getEvents());
     }, [])
 
     const submitForm = newEvent => {
         setModalVisible(false);
-        dispatch(EventActionCreators.uploadEvents(user, events, newEvent));
+        dispatch(EventActionCreators.addEvent(newEvent));
+        dispatch(EventActionCreators.uploadEvents());
         message.success("Событие добавлено");
     }
 
     return (
-        <>
-            <Layout>
-                <ConfigProvider locale={locale}>
-                    <Row justify="center" >
-                        <EventCalendar events={events} />
-                    </Row>
-                    <Modal
-                        title="Добавить новое событие"
-                        visible={modalVisible}
-                        footer={null}
-                        onCancel={() => setModalVisible(false)}
-                    >
-                        <EventForm submit={submitForm} />
-                    </Modal>
-                </ConfigProvider>
-                <Affix style={{ position: 'fixed', bottom: 20, right: 20, zIndex: 10 }} >
-                    <Tooltip placement="left" title="Добавить новое событие">
-                        <Button
-                            type="primary"
-                            size="large"
-                            shape="circle"
-                            onClick={() => setModalVisible(true)}
-                            icon={<PlusOutlined />}
-                        >
-                        </Button>
-                    </Tooltip>
-                </Affix>
-            </Layout>
+        <Layout>
+            <ConfigProvider locale={locale}>
+                <Row justify="center" >
+                    <EventCalendar events={events} />
+                </Row>
 
-        </>
+                <Modal
+                    title="Добавить новое событие"
+                    visible={modalVisible}
+                    footer={null}
+                    onCancel={() => setModalVisible(false)}
+                >
+                    <EventForm submit={submitForm} />
+                </Modal>
+            </ConfigProvider>
+
+            <Affix style={{ position: 'fixed', bottom: 20, right: 20, zIndex: 10 }} >
+                <Tooltip placement="left" title="Добавить новое событие">
+                    <Button
+                        type="primary"
+                        size="large"
+                        shape="circle"
+                        onClick={() => setModalVisible(true)}
+                        icon={<PlusOutlined />}
+                    />
+                </Tooltip>
+            </Affix>
+        </Layout>
     )
 }
 

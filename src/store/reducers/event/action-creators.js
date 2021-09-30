@@ -8,48 +8,37 @@ export const EventActionCreators = {
     setEvents: (events) => {
         return { type: SET_EVENTS, payload: events }
     },
+
     addEvent: (event) => {
         return { type: ADD_EVENT, payload: event }
     },
 
-    uploadEvents: (user, events, newEvent = null) => async dispatch => {
-        try {
-            const emailHash = MD5(user.email).toString();
-            const newEvents = events.slice();
+    uploadEvents: () => async (dispatch, getState) => {
+        const { auth, event } = getState();
+        const emailHash = MD5(auth.user.email).toString();
+        const newEvents = event.events.slice();
 
-            if (newEvent) {
-                newEvents.push(newEvent);
-                dispatch(EventActionCreators.addEvent(newEvent));
-            }
-
-            set(ref(database, emailHash), {
-                events: newEvents
-            });
-
+        set(ref(database, emailHash), {
+            events: newEvents
+        }).then(() => {
             dispatch(EventActionCreators.setEvents(newEvents));
+        }).catch((error) => {
+            console.error.toString(error);
+        })
 
-        } catch (error) {
-            console.error(error);
-        }
     },
 
-    getEvents: (user) => async dispatch => {
-        try {
-            let events = [];
-            const emailHash = MD5(user.email).toString();
+    getEvents: () => async (dispatch, getState) => {
+        const { auth } = getState();
+        const emailHash = MD5(auth.user.email).toString();
 
-            await get(child(dbRef, emailHash)).then((snapshot) => {
-                if (snapshot.exists()) {
-                    events = snapshot.val().events;
-                }
-            }).catch((error) => {
-                console.error(error);
-            });
-
+        get(child(dbRef, emailHash)).then((snapshot) => {
+            const events = snapshot.exists()
+                ? snapshot.val().events
+                : [];
             dispatch(EventActionCreators.setEvents(events));
-
-        } catch (error) {
+        }).catch((error) => {
             console.error(error);
-        }
+        });
     }
 }

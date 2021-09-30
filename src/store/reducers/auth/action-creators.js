@@ -1,5 +1,5 @@
 import { SET_AUTH, SET_IS_LOADING, SET_USER } from "../action-types";
-import { signInWithEmailAndPassword, createUserWithEmailAndPassword } from "firebase/auth";
+import { signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged } from "firebase/auth";
 import { auth } from "../../../firebase";
 import { message } from "antd";
 
@@ -43,5 +43,14 @@ export const AuthActionCreators = {
             .catch((error) => {
                 message.error(error.message);
             });
+    },
+
+    signedInUser: () => async (dispatch) => {
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                dispatch(AuthActionCreators.setUser({ email: user.email, uid: user.uid }));
+                dispatch(AuthActionCreators.setIsAuth(true));
+            }
+        })
     }
 }
