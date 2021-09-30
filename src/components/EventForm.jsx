@@ -48,9 +48,9 @@ const EventForm = ({ submit }) => {
                         required: true,
                         message: "Выберите дату"
                     },
-                    ({ getFieldValue }) => ({
+                    () => ({
                         validator(_, value) {
-                            if (value.isSameOrAfter(moment())) {
+                            if (value?.isSameOrAfter(moment()) || !value) {
                                 return Promise.resolve();
                             }
                             return Promise.reject(new Error("Выбранная дата уже прошла"));
