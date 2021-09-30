@@ -7,14 +7,13 @@ import { eventStatus } from '../enums';
 import { EventActionCreators } from '../store/reducers/event/action-creators';
 
 
-
-const SmallEventsListUl = styled.ul`
+const SmallEventsList = styled.ul`
     margin: 0;
     padding: 0;
     list-style: none;
 `;
 
-const SmallEventsListLi = styled.li.attrs(props => ({
+const SmallEventsListItem = styled.li.attrs(props => ({
     className: props.status
 }))`
     width: 100%;
@@ -60,17 +59,17 @@ const EventCalendar = ({ events }) => {
         const currentDayEvents = events.filter(el => el.date === formatedDate);
         const isPastEvents = value.isSameOrBefore(moment());
         return (
-            <SmallEventsListUl>
+            <SmallEventsList>
                 {currentDayEvents.map((el, i) =>
-                    <SmallEventsListLi
+                    <SmallEventsListItem
                         isPastEvents={isPastEvents}
                         status={el.status}
                         key={i}
                     >
                         {el.description}
-                    </SmallEventsListLi>
+                    </SmallEventsListItem>
                 )}
-            </SmallEventsListUl>
+            </SmallEventsList>
         );
     }
 
@@ -88,7 +87,7 @@ const EventCalendar = ({ events }) => {
     const changeStatus = (e, item) => {
         const newEvents = events.slice();
         item.status = e.target.value;
-        newEvents[item.id].status = e.target.value;
+        newEvents[item.id].status = item.status;
         dispatch(EventActionCreators.setEvents(newEvents));
         dispatch(EventActionCreators.uploadEvents(user, newEvents));
     }
@@ -110,6 +109,7 @@ const EventCalendar = ({ events }) => {
                 <List
                     itemLayout="horizontal"
                     dataSource={selectedEvents}
+                    pagination={{pageSize: 3}}
                     renderItem={item => (
                         <List.Item>
                             <List.Item.Meta key={item.id + item.date} />
