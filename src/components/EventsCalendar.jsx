@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { Calendar, Modal, List, Radio, Row, Typography, message } from "antd";
+import { CheckOutlined, CloseOutlined, ClockCircleOutlined } from '@ant-design/icons';
 import moment from 'moment';
 import styled from 'styled-components';
 import { eventStatus } from '../enums';
@@ -51,8 +52,7 @@ const EventCalendar = ({ events }) => {
 
     const [modalVisible, setModalVisible] = useState(false);
     const [selectedEvents, setSelectedEvents] = useState([]);
-    const [currentDate, setCurrentDate] = useState("");
-    const { user } = useSelector(state => state.auth);
+    const [selectedDate, setSelectedDate] = useState("");
     const dispatch = useDispatch();
 
     const dateCellRender = value => {
@@ -82,24 +82,34 @@ const EventCalendar = ({ events }) => {
         if (currentEvents.length > 0) {
             setModalVisible(true);
             setSelectedEvents(currentEvents);
-            setCurrentDate(formatedDate);
+            setSelectedDate(formatedDate);
         }
     }
 
     const changeStatus = (e, item) => {
+        const newStatus = e.target.value;
         const newEvents = events.slice();
-        item.status = e.target.value;
-        newEvents[item.id].status = item.status;
-        dispatch(EventActionCreators.uploadEvents(user, newEvents));
+        const newSelectedEvents = selectedEvents
+            .map(el => el.id === item.id ? { ...el, status: newStatus } : el);
+
+        newEvents[item.id].status = newStatus;
+        setSelectedEvents(newSelectedEvents);
+
+        dispatch(EventActionCreators.setEvents(newEvents));
+        dispatch(EventActionCreators.uploadEvents());
     }
 
     const changeDescription = (newDescription, item) => {
-        console.log(newDescription);
         if (newDescription.length) {
             const newEvents = events.slice();
-            item.description = newDescription;
-            newEvents[item.id].description = item.description;
-            dispatch(EventActionCreators.uploadEvents(user, newEvents));
+            const newSelectedEvents = selectedEvents
+                .map(el => el.id === item.id ? { ...el, description: newDescription } : el);
+
+            newEvents[item.id].description = newDescription;
+            setSelectedEvents(newSelectedEvents);
+
+            dispatch(EventActionCreators.setEvents(newEvents));
+            dispatch(EventActionCreators.uploadEvents());
         }
         else {
             message.error("Добавьте описание");
@@ -115,7 +125,7 @@ const EventCalendar = ({ events }) => {
                 onSelect={selectDate}
             />
             <Modal
-                title={`События на ${currentDate}`}
+                title={`События на ${selectedDate}`}
                 visible={modalVisible}
                 footer={null}
                 onCancel={() => setModalVisible(false)}
@@ -125,13 +135,9 @@ const EventCalendar = ({ events }) => {
                     dataSource={selectedEvents}
                     pagination={{ pageSize: 3 }}
                     renderItem={item => (
-                        <List.Item>
-                            <List.Item.Meta key={item.id + item.date} />
-
+                        <List.Item key={item.id}>
                             <Typography.Paragraph
-                                editable={{
-                                    onChange: (value) => changeDescription(value, item)
-                                }}
+                                editable={{ onChange: (value) => changeDescription(value, item) }}
                                 style={{ width: "100%" }}
                             >
                                 {item.description}
@@ -144,11 +150,10 @@ const EventCalendar = ({ events }) => {
                                     value={item.status}
                                     onChange={e => changeStatus(e, item)}
                                 >
-                                    <Radio.Button value={eventStatus.PLANNED}>Planned</Radio.Button>
-                                    <Radio.Button value={eventStatus.DONE}>Done</Radio.Button>
-                                    <Radio.Button value={eventStatus.CANCELLED}>Cancelled</Radio.Button>
+                                    <Radio.Button value={eventStatus.PLANNED}><ClockCircleOutlined /></Radio.Button>
+                                    <Radio.Button value={eventStatus.DONE}><CheckOutlined /></Radio.Button>
+                                    <Radio.Button value={eventStatus.CANCELLED}><CloseOutlined /></Radio.Button>
                                 </Radio.Group>
-
                             </Row>
 
                         </List.Item>
