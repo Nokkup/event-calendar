@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Calendar, Modal, List, Radio, Row } from "antd";
+import { Calendar, Modal, List, Radio, Row, Typography, message } from "antd";
 import moment from 'moment';
 import styled from 'styled-components';
 import { eventStatus } from '../enums';
@@ -51,10 +51,11 @@ const EventCalendar = ({ events }) => {
 
     const [modalVisible, setModalVisible] = useState(false);
     const [selectedEvents, setSelectedEvents] = useState([]);
+    const [currentDate, setCurrentDate] = useState("");
     const { user } = useSelector(state => state.auth);
     const dispatch = useDispatch();
 
-    function dateCellRender(value) {
+    const dateCellRender = value => {
         const formatedDate = value.format('YYYY-MM-DD');
         const currentDayEvents = events.filter(el => el.date === formatedDate);
         const isPastEvents = value.isSameOrBefore(moment());
@@ -81,6 +82,7 @@ const EventCalendar = ({ events }) => {
         if (currentEvents.length > 0) {
             setModalVisible(true);
             setSelectedEvents(currentEvents);
+            setCurrentDate(formatedDate);
         }
     }
 
@@ -88,8 +90,20 @@ const EventCalendar = ({ events }) => {
         const newEvents = events.slice();
         item.status = e.target.value;
         newEvents[item.id].status = item.status;
-        dispatch(EventActionCreators.setEvents(newEvents));
         dispatch(EventActionCreators.uploadEvents(user, newEvents));
+    }
+
+    const changeDescription = (newDescription, item) => {
+        console.log(newDescription);
+        if (newDescription.length) {
+            const newEvents = events.slice();
+            item.description = newDescription;
+            newEvents[item.id].description = item.description;
+            dispatch(EventActionCreators.uploadEvents(user, newEvents));
+        }
+        else {
+            message.error("Добавьте описание");
+        }
     }
 
     return (
@@ -101,19 +115,28 @@ const EventCalendar = ({ events }) => {
                 onSelect={selectDate}
             />
             <Modal
-                title="Список событий"
+                title={`События на ${currentDate}`}
                 visible={modalVisible}
                 footer={null}
                 onCancel={() => setModalVisible(false)}
             >
                 <List
-                    itemLayout="horizontal"
+                    itemLayout="vertical"
                     dataSource={selectedEvents}
-                    pagination={{pageSize: 3}}
+                    pagination={{ pageSize: 3 }}
                     renderItem={item => (
                         <List.Item>
                             <List.Item.Meta key={item.id + item.date} />
-                            {item.description}
+
+                            <Typography.Paragraph
+                                editable={{
+                                    onChange: (value) => changeDescription(value, item)
+                                }}
+                                style={{ width: "100%" }}
+                            >
+                                {item.description}
+                            </Typography.Paragraph>
+
                             <Row justify="end">
                                 <Radio.Group
                                     size="small"

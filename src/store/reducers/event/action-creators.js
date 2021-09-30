@@ -26,6 +26,8 @@ export const EventActionCreators = {
                 events: newEvents
             });
 
+            dispatch(EventActionCreators.setEvents(newEvents));
+
         } catch (error) {
             console.error(error);
         }
