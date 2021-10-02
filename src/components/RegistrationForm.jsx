@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Form, Input, Button } from "antd";
 import { AuthActionCreators } from "../store/reducers/auth/action-creators";
 import { Link } from 'react-router-dom';
@@ -9,6 +9,7 @@ const RegistrationForm = () => {
 
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const { isLoading } = useSelector(state => state.auth);
     const dispatch = useDispatch();
 
     const submitForm = () => {
@@ -27,7 +28,7 @@ const RegistrationForm = () => {
             </Form.Item>
 
             <Form.Item>
-                <Button type="primary" htmlType="submit" style={{ width: "100%" }}>Registration</Button>
+                <Button type="primary" htmlType="submit" loading={isLoading} style={{ width: "100%" }}>Registration</Button>
                 <span>Or </span>
                 <Link to="/login">login</Link>
             </Form.Item>

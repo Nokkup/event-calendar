@@ -36,12 +36,15 @@ export const AuthActionCreators = {
     },
 
     registration: (email, password) => async (dispatch) => {
+        dispatch(AuthActionCreators.setIsLoading(true));
         createUserWithEmailAndPassword(auth, email, password)
             .then((userCredential) => {
                 dispatch(AuthActionCreators.login(email, password));
+                dispatch(AuthActionCreators.setIsLoading(false));
             })
             .catch((error) => {
                 message.error(error.message);
+                dispatch(AuthActionCreators.setIsLoading(false));
             });
     },
 
